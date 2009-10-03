@@ -12,17 +12,30 @@ from openid.store import interface, nonce
 log = logging.getLogger(__name__)
 
 
+class Person(models.Model):
+
+    openid = models.CharField(max_length=500)
+    slug = models.CharField(max_length=500)
+    name = models.CharField(max_length=500)
+    email = models.EmailField()
+
+    def get_permalink_url(self):
+        if self.slug:
+            return reverse('profile', kwargs={'slug': self.slug})
+        return self.openid
+
+
 # OpenID models
 
-class Association(Model):
-    server_url = db.StringProperty()
-    expires = db.IntegerProperty()
+class Association(models.Model):
+    server_url = models.CharField(max_length=500)
+    expires = models.IntegerField()
 
-    handle = db.StringProperty()
-    secret = db.ByteStringProperty()
-    issued = db.IntegerProperty()
-    lifetime = db.IntegerProperty()
-    assoc_type = db.StringProperty()
+    handle = models.CharField(max_length=500)
+    secret = models.CharField(max_length=500)
+    issued = models.IntegerField()
+    lifetime = models.IntegerField()
+    assoc_type = models.CharField(max_length=500)
 
     def save(self):
         self.expires = self.issued + self.lifetime
@@ -38,12 +51,11 @@ class Association(Model):
         )
 
 
-class Squib(Model):
-    server_url = db.StringProperty()
-    timestamp = db.IntegerProperty()
-    salt = db.StringProperty()
+class Nonce(Model):
 
-    api_type = 'openid_squib'
+    server_url = models.CharField(max_length=500)
+    timestamp = models.IntegerField()
+    salt = models.CharField(max_length=500)
 
 
 class OpenIDStore(interface.OpenIDStore):
@@ -58,7 +70,7 @@ class OpenIDStore(interface.OpenIDStore):
             association.lifetime, association.assoc_type, server_url, a.expires)
 
     def getAssociation(self, server_url, handle=None):
-        q = Association.all().filter(server_url=server_url)
+        q = Association.objects.all().filter(server_url=server_url)
         if handle is not None:
             q.filter(handle=handle)
 
@@ -66,32 +78,32 @@ class OpenIDStore(interface.OpenIDStore):
         q.filter(expires__gte=int(time.time()))
 
         # Get the futuremost association.
-        q.order('-expires')
+        q.order_by('-expires')
 
         try:
             a = q[0]
         except IndexError:
-            log.debug('Could not find requested association %r for server %s)',
+            log.debug('Could not find requested association %r for server %s',
                 handle, server_url)
             return
-        else:
-            log.debug('Found requested association %r for server %s',
-                handle, server_url)
-            return a.as_openid_association()
+
+        log.debug('Found requested association %r for server %s',
+            handle, server_url)
+        return a.as_openid_association()
 
     def removeAssociation(self, server_url, handle):
-        q = Association.all().filter(server_url=server_url, handle=handle)
+        q = Association.objects.all().filter(server_url=server_url, handle=handle)
         try:
             a = q[0]
         except IndexError:
             log.debug('Could not find requested association %r for server %s to delete',
                 handle, server_url)
             return False
-        else:
-            a.delete()
-            log.debug('Found and deleted requested association %r for server %s',
-                handle, server_url)
-            return True
+
+        a.delete()
+        log.debug('Found and deleted requested association %r for server %s',
+            handle, server_url)
+        return True
 
     def useNonce(self, server_url, timestamp, salt):
         now = int(time.time())
@@ -100,19 +112,19 @@ class OpenIDStore(interface.OpenIDStore):
 
         data = dict(server_url=server_url, timestamp=timestamp, salt=salt)
 
-        q = Squib.all(keys_only=True).filter(**data)
+        q = Nonce.objects.all().filter(**data)
         try:
             s = q[0]
         except IndexError:
             pass
         else:
-            log.debug('Discovered squib %r %r for server %s was already used',
+            log.debug('Discovered nonce %r %r for server %s was already used',
                 timestamp, salt, server_url)
             return False
 
-        s = Squib(**data)
+        s = Nonce(**data)
         s.save()
-        log.debug('Noted new squib %r %r for server %s',
+        log.debug('Noted new nonce %r %r for server %s',
             timestamp, salt, server_url)
         return True
 
@@ -122,13 +134,15 @@ class OpenIDStore(interface.OpenIDStore):
 
     def cleanupAssociations(self):
         now = int(time.time())
-        q = Association.all(keys_only=True).filter(expires__lt=now - nonce.SKEW)
-        db.delete(q.fetch(100))
+        q = Association.objects.all().filter(expires__lt=now - nonce.SKEW)
+        q.delete()
+        log.debug('Deleted expired associations')
 
     def cleanupNonces(self):
         now = int(time.time())
-        q = Squib.all(keys_only=True).filter(timestamp__lt=now - nonce.SKEW)
-        db.delete(q.fetch(100))
+        q = Nonce.objects.all().filter(timestamp__lt=now - nonce.SKEW)
+        q.delete()
+        log.debug('Deleted expired nonces')
 
     @classmethod
     def make_person_from_response(cls, resp):
@@ -137,10 +151,12 @@ class OpenIDStore(interface.OpenIDStore):
 
         # Find the person.
         openid = resp.identity_url
-        p = Person.get(openid=openid)
-        if p is None:
+        try:
+            p = Person.objects.get(openid=openid)
+        except Person.DoesNotExist:
             p = Person(openid=openid)
 
+        # Save Simple Registration data we may have asked for.
         sr = sreg.SRegResponse.fromSuccessResponse(resp)
         if sr is not None:
             if 'nickname' in sr:
@@ -148,6 +164,7 @@ class OpenIDStore(interface.OpenIDStore):
             if 'email' in sr:
                 p.email = sr['email']
 
+        # Save Attribute Exchange data we may have asked for.
         fr = ax.FetchResponse.fromSuccessResponse(resp)
         if fr is not None:
             firstname = fr.getSingle('http://axschema.org/namePerson/first')
@@ -160,6 +177,7 @@ class OpenIDStore(interface.OpenIDStore):
             if email is not None:
                 p.email = email
 
+        # Make up a name from the URL if necessary.
         if p.name is None:
             name = resp.identity_url
             # Remove the leading scheme, if it's http.
@@ -167,8 +185,5 @@ class OpenIDStore(interface.OpenIDStore):
             # If it's just a domain, strip the trailing slash.
             name = re.sub(r'^([^/]+)/$', r'\1', name)
             p.name = name
-
-        if openid == "http://markpasc.org/mark/":
-            p.is_admin = True
 
         p.save()
