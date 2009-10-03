@@ -185,7 +185,7 @@ class OpenIDStore(interface.OpenIDStore):
                 p.email = email
 
         # Make up a name from the URL if necessary.
-        if p.name is None:
+        if not p.name:
             name = resp.identity_url
             # Remove the leading scheme, if it's http.
             name = re.sub(r'^http://', '', name)
