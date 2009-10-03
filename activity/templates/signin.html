@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block headextra %}
+
+    <style type="text/css">
+        input.openid {
+            background: #fff url({% url static path="openid.png" %}) no-repeat 2px center;
+            color: #000;
+            padding: 3px 3px 3px 20px;
+            border: 1px inset #999;
+            width: 20em;
+        }
+    </style>
+
+{% endblock %}
+
+{% block content %}
+
+    <form method="POST" action="{% url activity.views.start %}">
+        <p><label>Your OpenID: <input name="openid_url" class="openid"></label></p>
+        <p><input type="submit" value="Sign in"></p>
+    </form>
+
+{% endblock %}

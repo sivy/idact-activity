@@ -27,7 +27,7 @@ def home(request):
 @auth_forbidden
 def signin(request, nexturl=None):
     return render_to_response(
-        'library/signin.html',
+        'signin.html',
         {},
         context_instance=RequestContext(request),
     )
