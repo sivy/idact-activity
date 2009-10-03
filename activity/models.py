@@ -51,7 +51,7 @@ class Association(models.Model):
         )
 
 
-class Nonce(Model):
+class Nonce(models.Model):
 
     server_url = models.CharField(max_length=500)
     timestamp = models.IntegerField()
