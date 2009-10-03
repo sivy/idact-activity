@@ -1,3 +1,4 @@
+from base64 import b64encode, b64decode
 import logging
 import re
 import time
@@ -44,7 +45,8 @@ class Association(models.Model):
     def as_openid_association(self):
         return openid.association.Association(
             handle=self.handle,
-            secret=self.secret,
+            # We had to store the secret base64 encoded.
+            secret=b64decode(self.secret),
             issued=self.issued,
             lifetime=self.lifetime,
             assoc_type=self.assoc_type,
@@ -62,8 +64,13 @@ class OpenIDStore(interface.OpenIDStore):
 
     def storeAssociation(self, server_url, association):
         a = Association(server_url=server_url)
-        for key in ('handle', 'secret', 'issued', 'lifetime', 'assoc_type'):
+        for key in ('handle', 'issued', 'lifetime', 'assoc_type'):
             setattr(a, key, getattr(association, key))
+
+        # The secret is a bytestring, which Django will try to decode as UTF-8 later,
+        # so base64 encode it first.
+        a.secret = b64encode(association.secret)
+
         a.save()
         log.debug('Stored association %r %r %r %r %r for server %s (expires %r)',
             association.handle, association.secret, association.issued,
