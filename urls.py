@@ -1,3 +1,5 @@
+from os.path import join, dirname
+
 from django.conf.urls.defaults import *
 
 
@@ -10,6 +12,10 @@ urlpatterns = patterns('',
     # (r'^idact/', include('idact.foo.urls')),
 
     url(r'^', include('activity.urls')),
+
+    url(r'^static/(?P<path>.*)$', 'django.views.static.serve',
+        {'document_root': join(dirname(__file__), 'static')},
+        name='static'),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
