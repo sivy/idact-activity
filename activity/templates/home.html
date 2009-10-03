@@ -4,8 +4,8 @@
 
     <h1>Hello world!</h1>
 
-    {% if request.user %}
-        <p>Hi, {{ request.user.name|escape }}!</p>
+    {% if user %}
+        <p>Hi, {{ user.name|escape }}!</p>
     {% else %}
         <p><a href="{% url signin %}">Sign in</a></p>
     {% endif %}
