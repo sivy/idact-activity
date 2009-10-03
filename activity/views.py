@@ -2,6 +2,8 @@ import logging
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from openid.consumer import consumer, discover
 from openid.extensions import sreg, ax
 
@@ -10,6 +12,14 @@ from activity.models import OpenIDStore
 
 
 log = logging.getLogger(__name__)
+
+
+def home(request):
+    return render_to_response(
+        'home.html',
+        {},
+        context_instance=RequestContext(request),
+    )
 
 
 # OpenID views
