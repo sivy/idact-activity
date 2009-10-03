@@ -7,7 +7,7 @@ from django.template import RequestContext
 from openid.consumer import consumer, discover
 from openid.extensions import sreg, ax
 
-from activity.decorators import auth_forbidden
+from activity.decorators import auth_forbidden, auth_required
 from activity.models import OpenIDStore
 
 
@@ -23,6 +23,22 @@ def home(request):
 
 
 # OpenID views
+
+@auth_forbidden
+def signin(request, nexturl=None):
+    return render_to_response(
+        'library/signin.html',
+        {},
+        context_instance=RequestContext(request),
+    )
+
+
+@auth_required
+def signout(request):
+    del request.session['openid']
+    del request.user
+    return HttpResponseRedirect(reverse('home'))
+
 
 @auth_forbidden
 def start(request):
