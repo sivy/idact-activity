@@ -26,6 +26,13 @@ class Person(models.Model):
         return self.openid
 
 
+class Thanks(models.Model):
+
+    person_from = models.ForeignKey(Person, related_name='thanks_sent')
+    person_to = models.ForeignKey(Person, related_name='thanks_received')
+    message = models.TextField()
+
+
 # OpenID models
 
 class Association(models.Model):
@@ -152,6 +159,14 @@ class OpenIDStore(interface.OpenIDStore):
         log.debug('Deleted expired nonces')
 
     @classmethod
+    def default_name_for_url(cls, name):
+        # Remove the leading scheme, if it's http.
+        name = re.sub(r'^http://', '', name)
+        # If it's just a domain, strip the trailing slash.
+        name = re.sub(r'^([^/]+)/$', r'\1', name)
+        return name
+
+    @classmethod
     def make_person_from_response(cls, resp):
         if not isinstance(resp, consumer.SuccessResponse):
             raise ValueError("Can't make a Person from an unsuccessful response")
@@ -192,11 +207,6 @@ class OpenIDStore(interface.OpenIDStore):
 
         # Make up a name from the URL if necessary.
         if not p.name:
-            name = resp.identity_url
-            # Remove the leading scheme, if it's http.
-            name = re.sub(r'^http://', '', name)
-            # If it's just a domain, strip the trailing slash.
-            name = re.sub(r'^([^/]+)/$', r'\1', name)
-            p.name = name
+            p.name = cls.default_name_for_url(resp.identity_url)
 
         p.save()

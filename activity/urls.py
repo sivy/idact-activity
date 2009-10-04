@@ -2,6 +2,7 @@ from django.conf.urls.defaults import *
 
 urlpatterns = patterns('activity.views',
     url(r'^$', 'home', name='home'),
+    url(r'^save_thanks$', 'save_thanks'),
 )
 
 

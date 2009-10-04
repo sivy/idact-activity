@@ -8,18 +8,64 @@ from openid.consumer import consumer, discover
 from openid.extensions import sreg, ax
 
 from activity.decorators import auth_forbidden, auth_required
-from activity.models import OpenIDStore
+from activity.models import Person, Thanks, OpenIDStore
 
 
 log = logging.getLogger(__name__)
 
 
-def home(request):
+@auth_required
+def home(request, params=None):
     return render_to_response(
         'home.html',
-        {},
+        {} if params is None else params,
         context_instance=RequestContext(request),
     )
+
+
+@auth_required
+def save_thanks(request):
+    log.debug('HI SESSIONS ARE AM %r', request.session)
+    to_url = request.POST.get('person_to', None)
+    message = request.POST.get('message', None)
+    if not to_url or not message:
+        if not to_url:
+            request.flash.put(error='An OpenID to whom to send thanks is required.')
+        if not message:
+            request.flash.put(error='A message for thanks ')
+        return home(request, {
+            'person_to': to_url,
+            'message': message,
+        })
+
+    # Is that really an OpenID?
+    csr = consumer.Consumer({}, OpenIDStore())
+    try:
+        ar = csr.begin(to_url)
+    except discover.DiscoveryFailure, exc:
+        request.flash.put(error="That doesn't appear to be someone's OpenID: %s"
+            % exc.message)
+        return home(request, {
+            'person_to': to_url,
+            'message': message,
+        })
+
+    openid_url = ar.endpoint.claimed_id
+    try:
+        person_to = Person.objects.get(openid=openid_url)
+    except Person.DoesNotExist:
+        person_to = Person(openid=openid_url)
+        person_to.name = OpenIDStore.default_name_for_url(openid_url)
+        person_to.save()
+
+    thanks = Thanks()
+    thanks.person_from = request.user
+    thanks.person_to = person_to
+    thanks.message = message
+    thanks.save()
+
+    request.flash.put(message='Your thanks have been recorded!')
+    return HttpResponseRedirect(reverse('home'))
 
 
 # OpenID views

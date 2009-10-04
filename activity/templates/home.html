@@ -2,12 +2,32 @@
 
 {% block content %}
 
-    <h1>Hello world!</h1>
+    <div class="span-24">
+        <h1>Hello world!</h1>
 
-    {% if user %}
+        {{ block.super }}
+
         <p>Hi, {{ user.name|escape }}!</p>
-    {% else %}
-        <p><a href="{% url signin %}">Sign in</a></p>
-    {% endif %}
+
+        <h2>Thanks you've sent</h2>
+        {% for thanks in user.thanks_sent.all %}
+            {% if forloop.first %}<ul>{% endif %}
+
+            <li>You thanked <strong>{{ thanks.person_to.name|escape }}</strong> for <strong>{{ thanks.message|escape }}</strong></li>
+
+            {% if forloop.last %}</ul>{% endif %}
+        {% endfor %}
+
+        <h2>Thank someone else</h2>
+
+        <form method="POST" action="{% url activity.views.save_thanks %}">
+            <p>
+                <label>Thank <input name="person_to" class="openid" value="{{ person_to|escape }}"></label>
+                <label>for <input name="message" value="{{ message|escape }}"></label>
+            </p>
+            <p><input type="submit" value="Thanks!"></p>
+        </form>
+
+    </div>
 
 {% endblock %}
