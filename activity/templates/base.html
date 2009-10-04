@@ -6,6 +6,12 @@
     <link rel="stylesheet" type="text/css" href="{% url static path="ply.css" %}">
     <style type="text/css">
         body { font-size: 1.6em; }
+        .flash-message {
+            background: #ccf;
+            padding: 1em;
+            margin-bottom: 1em;
+        }
+        .flash-error { background: #fcc; }
     </style>
 
     {% block headextra %}
@@ -13,6 +19,14 @@
 </head><body>
 
     <div class="grid">
+        {% if flash %}
+            {% for key, message in flash.items %}
+                <div class="span-12 last flash-message flash-{{ key }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
         {% block content %}{% endblock %}
     </div>
 

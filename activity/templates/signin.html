@@ -16,9 +16,11 @@
 
 {% block content %}
 
-    <form method="POST" action="{% url activity.views.start %}">
-        <p><label>Your OpenID: <input name="openid_url" class="openid"></label></p>
-        <p><input type="submit" value="Sign in"></p>
-    </form>
+    <div class="span-24">
+        <form method="POST" action="{% url activity.views.start %}">
+            <p><label>Your OpenID: <input name="openid_url" class="openid"></label></p>
+            <p><input type="submit" value="Sign in"></p>
+        </form>
+    </div>
 
 {% endblock %}

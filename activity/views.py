@@ -44,7 +44,7 @@ def signout(request):
 def start(request):
     openid_url = request.POST.get('openid_url', None)
     if not openid_url:
-        request.flash.put(loginerror="An OpenID as whom to sign in is required.")
+        request.flash.put(error="An OpenID as whom to sign in is required.")
         return HttpResponseRedirect(reverse('signin'))
     log.debug('Attempting to sign viewer in as %r', openid_url)
 

@@ -12,6 +12,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + (
     'activity.middleware.AuthenticationMiddleware',
+    'djangoflash.middleware.FlashMiddleware',
 )
 
 
