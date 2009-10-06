@@ -7,7 +7,7 @@
 
         {{ block.super }}
 
-        <p>Hi, {{ user.name|escape }}!</p>
+        <p>Hi, {{ user.name|escape }}! <a href="{% url signout %}">Sign out</a> (if you want)</p>
 
         <h2>Thanks you've sent</h2>
         {% for thanks in user.thanks_sent.all %}
