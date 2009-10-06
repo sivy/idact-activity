@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+{% load activity %}
+<feed xmlns="http://www.w3.org/2005/Atom"
+      xmlns:activity="http://activitystrea.ms/schema/1.0/">
+    <title>Thanks for {{ user.name|escapexml }}</title>
+    <id>tag:activity.example.com,2010:{{ user.openid|escapexml }}</id>
+    <updated>{{ user.newest_thanks_sent.created|atomdate }}</updated>
+    <link rel="alternate" type="text/html" href="{% filter escapexml %}{% absoluteurl %}{% url thanks openid=user.openid %}{% endabsoluteurl %}{% endfilter %}" />
+    <link rel="self" type="application/atom+xml" href="{{ request.build_absolute_uri|escapexml }}" />
+
+    {% for thanks in user.thanks_sent.all %}
+    <entry>
+        <title>{{ user.name|escapexml }} thanked {{ thanks.person_to.name|escapexml }} for {{ thanks.message|escapexml }}</title>
+        <summary>{{ user.name|escapexml }} thanked {{ thanks.person_to.name|escapexml }} for {{ thanks.message|escapexml }}</summary>
+        <content type="text">{{ user.name|escapexml }} thanked {{ thanks.person_to.name|escapexml }} for {{ thanks.message|escapexml }}</content>
+
+        <author>
+            <name>{{ user.name|escapexml }}</name>
+            <uri>{{ user.openid|escapexml }}</uri>
+        </author>
+
+        <link rel="alternate" type="text/xml" href="{% filter escapexml %}{% absoluteurl %}{% url single_thanks ident=thanks.id %}{% endabsoluteurl %}{% endfilter %}" />
+        <id>tag:activity.example.com,2010:{{ thanks.id|escapexml }}</id>
+        <published>{{ thanks.created|atomdate }}</published>
+        <updated>{{ thanks.created|atomdate }}</updated>
+
+        <activity:verb>http://activity.example.com/schema/thanks</activity:verb>
+
+        <activity:object>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+            <id>{{ thanks.person_to.openid|escapexml }}</id>
+            <title>{{ thanks.person_to.name|escapexml }}</title>
+        </activity:object>
+
+        <activity:target>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>
+            <id>tag:activity.example.com,2010:{{ thanks.id|escapexml }}</id>
+            <link rel="alternate" type="text/html" href="{% filter escapexml %}{% absoluteurl %}{% url single_thanks ident=thanks.id %}{% endabsoluteurl %}{% endfilter %}" />
+            <content type="text">{{ thanks.message|escapexml }}</content>
+        </activity:target>
+    </entry>
+    {% endfor %}
+
+</feed>

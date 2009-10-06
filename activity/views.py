@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render_to_response
@@ -23,7 +24,12 @@ def home(request, params=None):
     )
 
 
-def thanks(request, openid):
+def thanks(request, openid, templatename=None, content_type=None):
+    if templatename is None:
+        templatename = 'thanks.html'
+    if content_type is None:
+        content_type = settings.DEFAULT_CONTENT_TYPE
+
     try:
         user = Person.objects.get(openid=openid)
     except Person.DoesNotExist:
@@ -31,12 +37,17 @@ def thanks(request, openid):
             content_type='text/plain')
 
     return render_to_response(
-        'thanks.html',
+        templatename,
         {
             'user': user,
         },
         context_instance=RequestContext(request),
+        mimetype=content_type,
     )
+
+
+def single_thanks(request, ident):
+    raise NotImplementedError
 
 
 @auth_required

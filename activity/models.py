@@ -25,12 +25,17 @@ class Person(models.Model):
             return reverse('profile', kwargs={'slug': self.slug})
         return self.openid
 
+    @property
+    def newest_thanks_sent(self):
+        return self.thanks_sent.order_by('-created')[0]
+
 
 class Thanks(models.Model):
 
     person_from = models.ForeignKey(Person, related_name='thanks_sent')
     person_to = models.ForeignKey(Person, related_name='thanks_received')
     message = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
 
 
 # OpenID models
