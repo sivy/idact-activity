@@ -10,7 +10,7 @@ class AuthenticationMiddleware(object):
 
     def process_request(self, request):
         person = None
-        sessionid = request.COOKIES['sessionid']
+        sessionid = request.COOKIES.get('sessionid', '(unknown)')
 
         try:
             openid = request.session['openid']
