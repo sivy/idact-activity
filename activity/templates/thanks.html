@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="span-24">
+        <h1>{{ user.name|escape }}</h1>
+
+        {% for thanks in user.thanks_sent.all %}
+            {% if forloop.first %}
+            <h2>Thanks {{ user.name|escape }} sent</h2>
+            <ul>{% endif %}
+
+            <li>{{ user.name|escape }} thanked <strong>{{ thanks.person_to.name|escape }}</strong> for <strong>{{ thanks.message|escape }}</strong></li>
+
+            {% if forloop.last %}</ul>{% endif %}
+        {% endfor %}
+
+        {% for thanks in user.thanks_received.all %}
+            {% if forloop.first %}
+            <h2>Thanks {{ user.name|escape }} received</h2>
+            <ul>{% endif %}
+
+            <li><strong>{{ thanks.person_to.name|escape }}</strong> thanked {{ user.name|escape }} for <strong>{{ thanks.message|escape }}</strong></li>
+
+            {% if forloop.last %}</ul>{% endif %}
+        {% endfor %}
+
+{% endblock %}
