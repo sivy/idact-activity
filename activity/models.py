@@ -202,11 +202,11 @@ class OpenIDStore(interface.OpenIDStore):
             # if the id provider returns an activity callback, 
             # we'll post the user's activity stream there
             callback  = fr.getSingle('http://schema.activitystrea.ms/activity/callback')
-            if firstname is not None and lastname is not None:
+            if firstname and lastname:
                 p.name = ' '.join((firstname, lastname))
-            elif firstname is not None:
+            elif firstname:
                 p.name = firstname
-            if email is not None:
+            if email:
                 p.email = email
             if callback is not None:
                # post the user's stream to the callback
