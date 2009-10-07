@@ -195,7 +195,7 @@ class OpenIDStore(interface.OpenIDStore):
         # Save Attribute Exchange data we may have asked for.
         fr = ax.FetchResponse.fromSuccessResponse(resp)
         if fr is not None:
-            log.info('For %s, got Attribute Exchange fields: %r', openid, fr.keys())
+            log.info('For %s, got Attribute Exchange fields: %r', openid, fr.data.keys())
             firstname = fr.getSingle('http://axschema.org/namePerson/first')
             lastname  = fr.getSingle('http://axschema.org/namePerson/last')
             email     = fr.getSingle('http://axschema.org/contact/email')
