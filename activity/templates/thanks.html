@@ -3,7 +3,7 @@
 {% block content %}
 
     <div class="span-24">
-        <h1>{{ user.name|escape }}</h1>
+        <h1>{{ user.name|escape }} <a href="/feed/{{ user.openid }}"><img src="/static/asicon16.png" /></a></h1>
 
         {% for thanks in user.thanks_sent.all %}
             {% if forloop.first %}
