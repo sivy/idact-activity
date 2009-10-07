@@ -186,6 +186,7 @@ class OpenIDStore(interface.OpenIDStore):
         # Save Simple Registration data we may have asked for.
         sr = sreg.SRegResponse.fromSuccessResponse(resp)
         if sr is not None:
+            log.info('For %s, got Simple Reg fields: %r', openid, sr.keys())
             if 'nickname' in sr:
                 p.name = sr['nickname']
             if 'email' in sr:
@@ -194,6 +195,7 @@ class OpenIDStore(interface.OpenIDStore):
         # Save Attribute Exchange data we may have asked for.
         fr = ax.FetchResponse.fromSuccessResponse(resp)
         if fr is not None:
+            log.info('For %s, got Attribute Exchange fields: %r', openid, fr.keys())
             firstname = fr.getSingle('http://axschema.org/namePerson/first')
             lastname  = fr.getSingle('http://axschema.org/namePerson/last')
             email     = fr.getSingle('http://axschema.org/contact/email')
