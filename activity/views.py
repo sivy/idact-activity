@@ -1,4 +1,6 @@
+import httplib2
 import logging
+from urllib import urlencode
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -162,4 +164,31 @@ def complete(request):
     elif isinstance(resp, consumer.SuccessResponse):
         OpenIDStore.make_person_from_response(resp)
         request.session['openid'] = resp.identity_url
+
+        # if the id provider returns an activity callback, 
+        # we'll post the user's activity stream there
+        fr = ax.FetchResponse.fromSuccessResponse(resp)
+        if fr is not None:
+            callback = fr.getSingle('http://schema.activitystrea.ms/activity/callback')
+            if callback:
+                log.debug("Posting user's activity feed back to %r", callback)
+
+                # post the user's stream to the callback
+                feed_url = reverse('activity_feed', kwargs={'openid': resp.identity_url})
+                data = {
+                    'feed_uri': request.build_absolute_uri(feed_url),
+                }
+
+                h = httplib2.Http()
+                try:
+                    resp, content = h.request(callback, method="POST", body=urlencode(data))
+                except Exception, exc:
+                    log.debug("From callback got %s: %s", type(exc).__name__, str(exc))
+                else:
+                    log.debug("From callback got %d %s response", resp.status, resp.reason)
+            else:
+                log.debug("Callback was %r so not posting back", callback)
+        else:
+            log.debug("AX response was %r so not posting back", fr)
+
         return HttpResponseRedirect(reverse('home'))

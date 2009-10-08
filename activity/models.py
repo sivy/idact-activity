@@ -199,18 +199,12 @@ class OpenIDStore(interface.OpenIDStore):
             firstname = fr.getSingle('http://axschema.org/namePerson/first')
             lastname  = fr.getSingle('http://axschema.org/namePerson/last')
             email     = fr.getSingle('http://axschema.org/contact/email')
-            # if the id provider returns an activity callback, 
-            # we'll post the user's activity stream there
-            callback  = fr.getSingle('http://schema.activitystrea.ms/activity/callback')
             if firstname and lastname:
                 p.name = ' '.join((firstname, lastname))
             elif firstname:
                 p.name = firstname
             if email:
                 p.email = email
-            if callback is not None:
-               # post the user's stream to the callback
-               pass
 
         # Make up a name from the URL if necessary.
         if not p.name:
