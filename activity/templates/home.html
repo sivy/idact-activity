@@ -9,7 +9,8 @@
 
         <p>Hi, {{ user.name|escape }}! <a href="{% url signout %}">Sign out</a> (if you want)</p>
 
-        <h2>Thanks you've sent <a title="get activity stream!" href="/feed/{{ user.openid }}"><img src="/static/asicon16.png" /></a></h2>
+        <h2>Thanks you've sent</h2>
+        <div>
         {% for thanks in user.thanks_sent.all %}
             {% if forloop.first %}<ul>{% endif %}
 
@@ -17,6 +18,8 @@
 
             {% if forloop.last %}</ul>{% endif %}
         {% endfor %}
+            <p><a title="get activity stream!" href="/thanks/{{ user.openid }}">View all your thanks</a> <a title="Subscribe to this activity stream!" href="/feed/{{ user.openid }}"><img valign="middle" src="/static/asicon16.png" /></a>
+        </div>
 
         <h2>Thank someone else</h2>
 
