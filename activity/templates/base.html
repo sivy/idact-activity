@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html><head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>{% block pagetitle %}activity{% endblock %}</title>
+    <title>identity/activity {% block pagetitle %}Activity Server{% endblock %}</title>
 
     <link rel="stylesheet" type="text/css" href="{% url static path="ply.css" %}">
     <style type="text/css">
@@ -36,6 +36,11 @@
             border: 1px inset #999;
             width: 20em;
         }
+        p.footer {
+            display: block;
+            clear: both;
+            padding: 50px 10px 10px;
+        }
     </style>
 
     {% block headextra %}
@@ -63,4 +68,7 @@
         {% endblock %}
     </div>
 
+    <p class="footer">
+        this project's source can be found on <a href="http://github.com/sivy/idact-activity">Github</a>.
+    </p>
 </body></html>
