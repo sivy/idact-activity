@@ -19,6 +19,7 @@ class Person(models.Model):
     slug = models.CharField(max_length=500)
     name = models.CharField(max_length=500)
     email = models.EmailField()
+    created = models.DateTimeField(auto_now_add=True)
 
     def get_permalink_url(self):
         if self.slug:
@@ -27,7 +28,10 @@ class Person(models.Model):
 
     @property
     def newest_thanks_sent(self):
-        return self.thanks_sent.order_by('-created')[0]
+        try:
+            return self.thanks_sent.order_by('-created')[0]
+        except IndexError:
+            return
 
 
 class Thanks(models.Model):
