@@ -12,8 +12,16 @@
             padding-top:0;
         }
         h1.title {
-            padding:0;
-            margin: 10px 0 10px 10px;
+            padding: 0;
+            margin: 10px 0;
+            background: url({% url static path="activity_title.png" %}) no-repeat -1px 0px;
+            height: 46px;
+        }
+        h1.title span {
+            visibility: hidden;
+        }
+        .title-icon img {
+            margin: 12px 0 0 0;
         }
         .flash-message {
             background: #ccf;
@@ -33,7 +41,15 @@
     {% block headextra %}
     {% endblock %}
 </head><body>
-    <h1 class="title"><img src="/static/activity_title.png" title="identity/activity" /></h1>
+
+    <div class="grid">
+        <div class="span-1 title-icon">
+            <img src="{% url static path="balloons_blue_32.png" %}" width="32" height="32" alt="">
+        </div>
+        <div class="span-23 last">
+            <h1 class="title"><span>Activity</span></h1>
+        </div>
+    </div>
     
     <div class="grid">
         {% block content %}
