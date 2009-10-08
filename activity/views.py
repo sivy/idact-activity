@@ -186,7 +186,10 @@ def complete(request):
                 except Exception, exc:
                     log.debug("From callback got %s: %s", type(exc).__name__, str(exc))
                 else:
-                    log.debug("From callback got %d %s response", resp.status, resp.reason)
+                    if resp['content-type'].startswith('text/plain'):
+                        log.debug("From callback got %d %s response: %s", resp.status, resp.reason, content)
+                    else:
+                        log.debug("From callback got %d %s %s response", resp.status, resp.reason, resp['content-type'])
             else:
                 log.debug("Callback was %r so not posting back", callback)
         else:
