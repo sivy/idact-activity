@@ -4,12 +4,57 @@
     <title>identity/activity {% block pagetitle %}Activity Server{% endblock %}</title>
 
     <link rel="stylesheet" type="text/css" href="{% url static path="ply.css" %}">
-    <link rel="stylesheet" type="text/css" href="{% url static path="styles.css" %}">
+    <style type="text/css">
+        body { 
+            font-size: 1.6em; 
+            border-top:12px solid #B8D763;
+            margin-top:0;
+            padding-top:0;
+        }
+        h1.title {
+            padding: 0;
+            margin: 10px 0;
+            background: url({% url static path="activity_title.png" %}) no-repeat -1px 0px;
+            height: 46px;
+        }
+        h1.title span {
+            visibility: hidden;
+        }
+        .title-icon img {
+            margin: 12px 0 0 0;
+        }
+        .flash-message {
+            background: #ccf;
+            padding: 1em;
+            margin-bottom: 1em;
+        }
+        .flash-error { background: #fcc; }
+        input.openid {
+            background: #fff url({% url static path="openid.png" %}) no-repeat 2px center;
+            color: #000;
+            padding: 3px 3px 3px 20px;
+            border: 1px inset #999;
+            width: 20em;
+        }
+        p.footer {
+            display: block;
+            clear: both;
+            padding: 50px 10px 10px;
+        }
+    </style>
+
     {% block headextra %}
     {% endblock %}
-</head>
-<body>
-    <h1 class="title"><img src="{% url static path="activity_title.png" %}" title="identity/activity" /></h1>
+</head><body>
+
+    <div class="grid">
+        <div class="span-1 title-icon">
+            <img src="{% url static path="balloons_blue_32.png" %}" width="32" height="32" alt="">
+        </div>
+        <div class="span-23 last">
+            <h1 class="title"><span>Activity</span></h1>
+        </div>
+    </div>
     
     <div class="grid">
         {% block content %}
