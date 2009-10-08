@@ -4,42 +4,12 @@
     <title>identity/activity {% block pagetitle %}Activity Server{% endblock %}</title>
 
     <link rel="stylesheet" type="text/css" href="{% url static path="ply.css" %}">
-    <style type="text/css">
-        body { 
-            font-size: 1.6em; 
-            border-top:12px solid #B8D763;
-            margin-top:0;
-            padding-top:0;
-        }
-        h1.title {
-            padding:0;
-            margin: 10px 0 10px 10px;
-        }
-        .flash-message {
-            background: #ccf;
-            padding: 1em;
-            margin-bottom: 1em;
-        }
-        .flash-error { background: #fcc; }
-        input.openid {
-            background: #fff url({% url static path="openid.png" %}) no-repeat 2px center;
-            color: #000;
-            padding: 3px 3px 3px 20px;
-            border: 1px inset #999;
-            width: 20em;
-        }
-        p.footer {
-            display: block;
-            clear: both;
-            padding: 50px 10px 10px;
-        }
-    </style>
-
+    <link rel="stylesheet" type="text/css" href="{% url static path="styles.css" %}">
     {% block headextra %}
     {% endblock %}
 </head>
 <body>
-    <h1 class="title"><img src="/static/activity_title.png" title="identity/activity" /></h1>
+    <h1 class="title"><img src="{% url static path="activity_title.png" %}" title="identity/activity" /></h1>
     
     <div class="grid">
         {% block content %}
