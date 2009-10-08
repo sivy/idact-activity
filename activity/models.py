@@ -19,6 +19,7 @@ class Person(models.Model):
     slug = models.CharField(max_length=500)
     name = models.CharField(max_length=500)
     email = models.EmailField()
+    created = models.DateTimeField(auto_now_add=True)
 
     def get_permalink_url(self):
         if self.slug:
@@ -27,7 +28,10 @@ class Person(models.Model):
 
     @property
     def newest_thanks_sent(self):
-        return self.thanks_sent.order_by('-created')[0]
+        try:
+            return self.thanks_sent.order_by('-created')[0]
+        except IndexError:
+            return
 
 
 class Thanks(models.Model):
@@ -195,22 +199,16 @@ class OpenIDStore(interface.OpenIDStore):
         # Save Attribute Exchange data we may have asked for.
         fr = ax.FetchResponse.fromSuccessResponse(resp)
         if fr is not None:
-            log.info('For %s, got Attribute Exchange fields: %r', openid, fr.keys())
+            log.info('For %s, got Attribute Exchange fields: %r', openid, fr.data.keys())
             firstname = fr.getSingle('http://axschema.org/namePerson/first')
             lastname  = fr.getSingle('http://axschema.org/namePerson/last')
             email     = fr.getSingle('http://axschema.org/contact/email')
-            # if the id provider returns an activity callback, 
-            # we'll post the user's activity stream there
-            callback  = fr.getSingle('http://schema.activitystrea.ms/activity/callback')
-            if firstname is not None and lastname is not None:
+            if firstname and lastname:
                 p.name = ' '.join((firstname, lastname))
-            elif firstname is not None:
+            elif firstname:
                 p.name = firstname
-            if email is not None:
+            if email:
                 p.email = email
-            if callback is not None:
-               # post the user's stream to the callback
-               pass
 
         # Make up a name from the URL if necessary.
         if not p.name:

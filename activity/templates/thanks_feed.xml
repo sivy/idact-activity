@@ -4,9 +4,10 @@
       xmlns:activity="http://activitystrea.ms/schema/1.0/">
     <title>Thanks for {{ user.name|escapexml }}</title>
     <id>tag:activity.example.com,2010:{{ user.openid|escapexml }}</id>
-    <updated>{{ user.newest_thanks_sent.created|atomdate }}</updated>
+    <updated>{% if user.newest_thanks_sent %}{{ user.newest_thanks_sent.created|atomdate }}{% else %}{{ user.created|atomdate }}{% endif %}</updated>
     <link rel="alternate" type="text/html" href="{% filter escapexml %}{% absoluteurl %}{% url thanks openid=user.openid %}{% endabsoluteurl %}{% endfilter %}" />
     <link rel="self" type="application/atom+xml" href="{{ request.build_absolute_uri|escapexml }}" />
+    <link rel="hub" type="application/x+pubsubhubbub" href="{{ pshub_url|escapexml }}" />
 
     {% for thanks in user.thanks_sent.all %}
     <entry>

@@ -88,6 +88,8 @@ INSTALLED_APPS = (
     'activity',
 )
 
+PSHUB_URL = 'http://localhost:8080/'
+
 
 import logging
 logging.basicConfig(level=logging.DEBUG)

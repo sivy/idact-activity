@@ -7,7 +7,8 @@ urlpatterns = patterns('activity.views',
     url(r'^thanks/(?P<openid>.*)$', 'thanks', name="thanks"),
     url(r'^feed/(?P<openid>.*)$', 'thanks',
         {'templatename': 'thanks_feed.xml',
-         'content_type': 'application/atom+xml'}),
+         'content_type': 'application/atom+xml'},
+        name="activity_feed"),
 )
 
 
