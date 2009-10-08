@@ -5,7 +5,16 @@
 
     <link rel="stylesheet" type="text/css" href="{% url static path="ply.css" %}">
     <style type="text/css">
-        body { font-size: 1.6em; }
+        body { 
+            font-size: 1.6em; 
+            border-top:12px solid #B8D763;
+            margin-top:0;
+            padding-top:0;
+        }
+        h1.title {
+            padding:0;
+            margin: 10px 0 10px 10px;
+        }
         .flash-message {
             background: #ccf;
             padding: 1em;
@@ -24,7 +33,8 @@
     {% block headextra %}
     {% endblock %}
 </head><body>
-
+    <h1 class="title"><img src="/static/activity_title.png" title="identity/activity" /></h1>
+    
     <div class="grid">
         {% block content %}
             {% if flash %}
