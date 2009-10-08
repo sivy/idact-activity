@@ -42,6 +42,7 @@ def thanks(request, openid, templatename=None, content_type=None):
         templatename,
         {
             'user': user,
+            'pshub_url': settings.PSHUB_URL,
         },
         context_instance=RequestContext(request),
         mimetype=content_type,
