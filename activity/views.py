@@ -50,7 +50,19 @@ def thanks(request, openid, templatename=None, content_type=None):
 
 
 def single_thanks(request, ident):
-    raise NotImplementedError
+    try:
+        thanks = Thanks.objects.get(id=ident)
+    except Thanks.DoesNotExist:
+        return HttpResponseNotFound('No such thanks %r' % ident,
+            content_type='text/plain')
+
+    return render_to_response(
+        'single_thanks.html',
+        {
+            'thanks': thanks,
+        },
+        context_instance=RequestContext(request),
+    )
 
 
 @auth_required
