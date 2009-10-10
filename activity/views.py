@@ -95,6 +95,27 @@ def save_thanks(request):
     thanks.save()
 
     request.flash.put(message='Your thanks have been recorded!')
+
+    # Tell the pubsub hub about it.
+    activity_url = reverse('activity_feed',
+        kwargs={'openid': request.user.openid})
+    activity_url = request.build_absolute_uri(activity_url)
+    publ_data = {
+        'hub.mode': 'publish',
+        'hub.url': activity_url,
+    }
+    h = httplib2.Http()
+    try:
+        resp, content = h.request(settings.PSHUB_URL, method='POST',
+            body=urlencode(publ_data))
+        if resp.status not in (200, 204):
+            raise ValueError('%d %s: %s' % (resp.status, resp.reason,
+                content if resp['content-type'].startswith('text/plain')
+                    else resp['content-type']))
+    except Exception, exc:
+        request.flash.put(error='There was a %s telling the Internet about '
+            'your new thanks: %s' % (type(exc).__name__, str(exc)))
+
     return HttpResponseRedirect(reverse('home'))
 
 
