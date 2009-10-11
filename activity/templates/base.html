@@ -5,20 +5,17 @@
 
     <link rel="stylesheet" type="text/css" href="{% url static path="ply.css" %}">
     <style type="text/css">
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
         body { 
             font-size: 1.6em; 
-            border-top:12px solid #B8D763;
-            margin-top:0;
-            padding-top:0;
         }
         h1.title {
             padding: 0;
             margin: 10px 0;
-            background: url({% url static path="activity_title.png" %}) no-repeat -1px 0px;
-            height: 46px;
-        }
-        h1.title span {
-            visibility: hidden;
         }
         .title-icon img {
             margin: 12px 0 0 0;
@@ -36,10 +33,26 @@
             border: 1px inset #999;
             width: 20em;
         }
-        p.footer {
-            display: block;
+        #banner {
+            border-top: 12px solid #B8D763;
+        }
+        #page {
+            min-height: 100%;
+            margin: 0 auto -100px;
+            padding: 0;
+        }
+        #not-a-footer {
             clear: both;
-            padding: 50px 10px 10px;
+            height: 100px;
+        }
+        #footer {
+            display: block;
+            height: 38px;
+            z-index: 4;
+            overflow: visible;
+            border-bottom: 12px solid #B8D763;
+            margin: 50px auto 0;
+            padding: 0;
         }
     </style>
 
@@ -47,28 +60,40 @@
     {% endblock %}
 </head><body>
 
-    <div class="grid">
-        <div class="span-1 title-icon">
-            <img src="{% url static path="balloons_blue_32.png" %}" width="32" height="32" alt="">
+    <div id="page">
+        <div id="banner">
+            <div class="grid">
+                <div class="span-1 title-icon">
+                    <a href="{% url home %}"><img src="{% url static path="balloons_blue_32.png" %}" width="32" height="32" alt=""></a>
+                </div>
+                <div class="span-23 last">
+                    <h1 class="title">
+                        <a href="{% url home %}"><img src="{% url static path="activity_title.png" %}" alt="Activity"></a>
+                    </h1>
+                </div>
+            </div>
         </div>
-        <div class="span-23 last">
-            <h1 class="title"><span>Activity</span></h1>
+
+        <div class="grid">
+            {% block content %}
+                {% if flash %}
+                    {% for key, message in flash.items %}
+                        <div class="span-24 last flash-message flash-{{ key }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endblock %}
         </div>
-    </div>
-    
-    <div class="grid">
-        {% block content %}
-            {% if flash %}
-                {% for key, message in flash.items %}
-                    <div class="span-24 last flash-message flash-{{ key }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endblock %}
+
+        <div id="not-a-footer"></div>
     </div>
 
-    <p class="footer">
-        this project's source can be found on <a href="http://github.com/sivy/idact-activity">Github</a>.
-    </p>
+    <div id="footer">
+        <div class="grid">
+            <p>this project's source can be found on <a
+            href="http://github.com/sivy/idact-activity">Github</a>.</p>
+        </div>
+    </div>
+
 </body></html>

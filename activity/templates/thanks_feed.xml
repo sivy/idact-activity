@@ -20,7 +20,7 @@
             <uri>{{ user.openid|escapexml }}</uri>
         </author>
 
-        <link rel="alternate" type="text/xml" href="{% filter escapexml %}{% absoluteurl %}{% url single_thanks ident=thanks.id %}{% endabsoluteurl %}{% endfilter %}" />
+        <link rel="alternate" type="text/html" href="{% filter escapexml %}{% absoluteurl %}{% url single_thanks ident=thanks.id %}{% endabsoluteurl %}{% endfilter %}" />
         <id>tag:activity.example.com,2010:{{ thanks.id|escapexml }}</id>
         <published>{{ thanks.created|atomdate }}</published>
         <updated>{{ thanks.created|atomdate }}</updated>

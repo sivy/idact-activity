@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="span-24 last">
+        <h1>Thanks!</h1>
+
+        <p>
+            <strong>{{ thanks.person_from.name }}</strong>
+            thanked
+            <strong>{{ thanks.person_to.name }}</strong>
+            for
+            <strong>{{ thanks.message }}</strong>!
+        </p>
+
+    </div>
+
+{% endblock %}
