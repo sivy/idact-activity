@@ -172,7 +172,7 @@ def start(request):
     fr.add(ax.AttrInfo("http://axschema.org/namePerson/first", alias='firstname', required=True))
     fr.add(ax.AttrInfo("http://axschema.org/namePerson/last", alias='lastname'))
     fr.add(ax.AttrInfo("http://axschema.org/contact/email", alias='email', required=True))
-    fr.add(ax.AttrInfo("http://schema.activitystrea.ms/activity/callback", alias='callback', required=False)) # sound good?
+    fr.add(ax.AttrInfo("http://activitystrea.ms/axschema/callback", alias='callback', required=False)) # sound good?
     ar.addExtension(fr)
 
     def whole_reverse(view):
