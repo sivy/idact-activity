@@ -203,7 +203,7 @@ def complete(request):
         # we'll post the user's activity stream there
         fr = ax.FetchResponse.fromSuccessResponse(resp)
         if fr is not None:
-            callback = fr.getSingle('http://schema.activitystrea.ms/activity/callback')
+            callback = fr.getSingle('http://activitystrea.ms/axschema/callback')
             if callback:
                 log.debug("Posting user's activity feed back to %r", callback)
 
