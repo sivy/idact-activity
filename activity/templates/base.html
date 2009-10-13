@@ -47,12 +47,30 @@
         }
         #footer {
             display: block;
+            position: relative;
             height: 38px;
             z-index: 4;
             overflow: visible;
             border-bottom: 12px solid #B8D763;
             margin: 50px auto 0;
             padding: 0;
+        }
+        #github-ribbon {
+            position: absolute;
+            float: right;
+            display: block;
+            right: 0px;
+            bottom: -12px;
+            width: 200px;
+            height: 200px;
+            text-decoration: none;
+            background: url({% url static path="big-blue-ribbon.png" %}) no-repeat -20px -20px;
+        }
+        a:link, a:hover, a:visited, a:active {
+            outline: none;
+        }
+        #github-ribbon span {
+            visibility: hidden;
         }
     </style>
 
@@ -91,8 +109,9 @@
 
     <div id="footer">
         <div class="grid">
-            <p>this project's source can be found on <a
-            href="http://github.com/sivy/idact-activity">Github</a>.</p>
+            <a title="Fork me on GitHub" href="http://github.com/sivy/idact-activity" id="github-ribbon">
+                <span>Fork me on GitHub</span>
+            </a>
         </div>
     </div>
 
