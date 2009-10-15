@@ -2,12 +2,9 @@
 
 {% block content %}
 
-    <div class="span-24">
-        <h1>Hello world!</h1>
+    <div class="span-24 last">
 
         {{ block.super }}
-
-        <p>Hi, {{ user.name|escape }}! <a href="{% url signout %}">Sign out</a> (if you want)</p>
 
         <h2>Thanks you've sent</h2>
         <div>
