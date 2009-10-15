@@ -32,16 +32,16 @@
             <p class="buttons"><input type="submit" value="Thanks!"></p>
         </form>
 
-        <h2>Thanks you've sent</h2>
+        <h2>Thanks folks have sent</h2>
+
         <div>
-        {% for thanks in user.thanks_sent.all %}
-            {% if forloop.first %}<ul>{% endif %}
-
-            <li>You thanked <strong>{{ thanks.person_to.name|escape }}</strong> for <strong>{{ thanks.message|escape }}</strong></li>
-
-            {% if forloop.last %}</ul>{% endif %}
-        {% endfor %}
-            <p><a title="get activity stream!" href="/thanks/{{ user.openid }}">View all your thanks</a> <a title="Subscribe to this activity stream!" href="/feed/{{ user.openid }}"><img valign="middle" src="/static/asicon16.png" /></a>
+            {% for thanks in all_thanks %}
+                <p>
+                    <strong>{{ thanks.person_from.name }}</strong> thanked
+                    <strong>{{ thanks.person_to.name }}</strong> for
+                    <strong>{{ thanks.message }}</strong>!
+                </p>
+            {% endfor %}
         </div>
 
     </div>
