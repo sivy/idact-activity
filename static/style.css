@@ -89,6 +89,10 @@ input.like-openid {
     padding: 0;
 }
 
+img.avatar {
+    vertical-align: middle;
+}
+
 #github-ribbon {
     position: absolute;
     float: right;

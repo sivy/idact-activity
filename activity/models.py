@@ -16,14 +16,12 @@ log = logging.getLogger(__name__)
 class Person(models.Model):
 
     openid = models.CharField(max_length=500)
-    slug = models.CharField(max_length=500)
+    avatar = models.CharField(max_length=255)
     name = models.CharField(max_length=500)
     email = models.EmailField()
     created = models.DateTimeField(auto_now_add=True)
 
     def get_permalink_url(self):
-        if self.slug:
-            return reverse('profile', kwargs={'slug': self.slug})
         return self.openid
 
     @property
@@ -203,12 +201,15 @@ class OpenIDStore(interface.OpenIDStore):
             firstname = fr.getSingle('http://axschema.org/namePerson/first')
             lastname  = fr.getSingle('http://axschema.org/namePerson/last')
             email     = fr.getSingle('http://axschema.org/contact/email')
+            avatar    = fr.getSingle('http://axschema.org/media/image/aspect11')
             if firstname and lastname:
                 p.name = ' '.join((firstname, lastname))
             elif firstname:
                 p.name = firstname
             if email:
                 p.email = email
+            if avatar:
+                p.avatar = avatar
 
         # Make up a name from the URL if necessary.
         if not p.name:

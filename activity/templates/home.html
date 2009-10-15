@@ -3,7 +3,6 @@
 {% block head %}
 <style type="text/css">
     form label {
-        float: left;
         width: 3em;
     }
 
@@ -37,8 +36,16 @@
         <div>
             {% for thanks in all_thanks %}
                 <p>
+                    {% if thanks.person_from.avatar %}
+                        <img src="{{ thanks.person_from.avatar }}" width="32" height="32" class="avatar" alt="">
+                    {% endif %}
                     <strong>{{ thanks.person_from.name }}</strong> thanked
+
+                    {% if thanks.person_to.avatar %}
+                        <img src="{{ thanks.person_to.avatar }}" width="32" height="32" class="avatar" alt="">
+                    {% endif %}
                     <strong>{{ thanks.person_to.name }}</strong> for
+
                     <strong>{{ thanks.message }}</strong>!
                 </p>
             {% endfor %}

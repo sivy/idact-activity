@@ -177,6 +177,7 @@ def start(request):
     fr.add(ax.AttrInfo("http://axschema.org/namePerson/first", alias='firstname', required=True))
     fr.add(ax.AttrInfo("http://axschema.org/namePerson/last", alias='lastname'))
     fr.add(ax.AttrInfo("http://axschema.org/contact/email", alias='email', required=True))
+    fr.add(ax.AttrInfo("http://axschema.org/media/image/aspect11", alias='avatar'))
     fr.add(ax.AttrInfo("http://activitystrea.ms/axschema/callback", alias='callback', required=False)) # sound good?
     ar.addExtension(fr)
 
