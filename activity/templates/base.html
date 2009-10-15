@@ -24,7 +24,7 @@
                 {% if user %}
                     <div class="span-7 last">
                         <p>
-                            Hi, {{ user.name|escape }}!
+                            Hi, <a href="{% url thanks openid=user.openid %}">{{ user.name }}</a>!
                             <br>
                             <a href="{% url signout %}">Sign out</a>
                         </p>
