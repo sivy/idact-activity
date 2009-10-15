@@ -1,10 +1,36 @@
 {% extends "base.html" %}
 
+{% block head %}
+<style type="text/css">
+    form label {
+        float: left;
+        width: 3em;
+    }
+
+    form p.buttons {
+        margin-left: 3.5em;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 
     <div class="span-24 last">
-
         {{ block.super }}
+
+        <h2>Thank someone!</h2>
+
+        <form method="POST" action="{% url activity.views.save_thanks %}">
+            <p class="pkg">
+                <label for="id_person_to">Thank</label>
+                <span class="field-input"><input id="id_person_to" name="person_to" class="openid" value="{{ person_to|escape }}"></span>
+            </p>
+            <p class="pkg">
+                <label for="id_message">for</label>
+                <span class="field-input"><input id="id_message" name="message" class="like-openid" value="{{ message|escape }}"><strong><em>!</em></strong></span>
+            </p>
+            <p class="buttons"><input type="submit" value="Thanks!"></p>
+        </form>
 
         <h2>Thanks you've sent</h2>
         <div>
@@ -17,16 +43,6 @@
         {% endfor %}
             <p><a title="get activity stream!" href="/thanks/{{ user.openid }}">View all your thanks</a> <a title="Subscribe to this activity stream!" href="/feed/{{ user.openid }}"><img valign="middle" src="/static/asicon16.png" /></a>
         </div>
-
-        <h2>Thank someone else</h2>
-
-        <form method="POST" action="{% url activity.views.save_thanks %}">
-            <p>
-                <label>Thank <input name="person_to" class="openid" value="{{ person_to|escape }}"></label>
-                <label>for <input name="message" value="{{ message|escape }}"></label>
-            </p>
-            <p><input type="submit" value="Thanks!"></p>
-        </form>
 
     </div>
 
