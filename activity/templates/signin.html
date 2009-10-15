@@ -11,8 +11,13 @@
         {{ block.super }}
 
         <form method="POST" action="{% url activity.views.start %}">
-            <p><label>Your OpenID: <input name="openid_url" class="openid"></label></p>
-            <p><input type="submit" value="Sign in"></p>
+            <p class="pkg">
+                <label for="id_openid_url">Your OpenID:</label>
+                <span class="field-input"><input id="id_openid_url" name="openid_url" class="openid"></span>
+            </p>
+            <p class="buttons">
+                <input type="submit" value="Sign in">
+            </p>
         </form>
     </div>
 
