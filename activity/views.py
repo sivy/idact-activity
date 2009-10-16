@@ -22,7 +22,7 @@ def home(request, params=None):
     if params is None:
         params = {}
 
-    params['all_thanks'] = Thanks.objects.all()[:20]
+    params['all_thanks'] = Thanks.objects.all().order_by('-created')[:20]
 
     return render_to_response(
         'home.html',
@@ -169,16 +169,11 @@ def start(request):
         request.flash.put(error=exc.message)
         return HttpResponseRedirect(reverse('signin'))
 
-    # Ask for some stuff by Simple Registration.
-    ar.addExtension(sreg.SRegRequest(optional=('nickname', 'fullname', 'email')))
-
     # Ask for some stuff by Attribute Exchange.
     fr = ax.FetchRequest()
-    fr.add(ax.AttrInfo("http://axschema.org/namePerson/first", alias='firstname', required=True))
-    fr.add(ax.AttrInfo("http://axschema.org/namePerson/last", alias='lastname'))
-    fr.add(ax.AttrInfo("http://axschema.org/contact/email", alias='email', required=True))
+    fr.add(ax.AttrInfo("http://axschema.org/namePerson/friendly", alias='friendly'))
     fr.add(ax.AttrInfo("http://axschema.org/media/image/aspect11", alias='avatar'))
-    fr.add(ax.AttrInfo("http://activitystrea.ms/axschema/callback", alias='callback', required=False)) # sound good?
+    fr.add(ax.AttrInfo("http://activitystrea.ms/axschema/callback", alias='callback'))
     ar.addExtension(fr)
 
     def whole_reverse(view):

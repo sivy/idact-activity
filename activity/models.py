@@ -6,7 +6,7 @@ import time
 from django.db import models
 import openid.association
 from openid.consumer import consumer
-from openid.extensions import sreg, ax
+from openid.extensions import ax
 from openid.store import interface, nonce
 
 
@@ -185,29 +185,14 @@ class OpenIDStore(interface.OpenIDStore):
         except Person.DoesNotExist:
             p = Person(openid=openid)
 
-        # Save Simple Registration data we may have asked for.
-        sr = sreg.SRegResponse.fromSuccessResponse(resp)
-        if sr is not None:
-            log.info('For %s, got Simple Reg fields: %r', openid, sr.keys())
-            if 'nickname' in sr:
-                p.name = sr['nickname']
-            if 'email' in sr:
-                p.email = sr['email']
-
         # Save Attribute Exchange data we may have asked for.
         fr = ax.FetchResponse.fromSuccessResponse(resp)
         if fr is not None:
             log.info('For %s, got Attribute Exchange fields: %r', openid, fr.data.keys())
-            firstname = fr.getSingle('http://axschema.org/namePerson/first')
-            lastname  = fr.getSingle('http://axschema.org/namePerson/last')
-            email     = fr.getSingle('http://axschema.org/contact/email')
-            avatar    = fr.getSingle('http://axschema.org/media/image/aspect11')
-            if firstname and lastname:
-                p.name = ' '.join((firstname, lastname))
-            elif firstname:
-                p.name = firstname
-            if email:
-                p.email = email
+            nickname = fr.getSingle('http://axschema.org/namePerson/friendly')
+            avatar   = fr.getSingle('http://axschema.org/media/image/aspect11')
+            if nickname:
+                p.name = nickname
             if avatar:
                 p.avatar = avatar
 
