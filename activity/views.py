@@ -17,8 +17,10 @@ from activity.models import Person, Thanks, OpenIDStore
 log = logging.getLogger(__name__)
 
 
-@auth_required
 def home(request, params=None):
+    if request.user is None:
+        return signin(request)
+
     if params is None:
         params = {}
 
@@ -138,13 +140,31 @@ def save_thanks(request):
 
 # OpenID views
 
+def xrds(request):
+    """
+    Respond to requests for the IDP's XRDS document, which is used in
+    IDP-driven identifier selection.
+    """
+    return render_to_response(
+        'xrds.xml',
+        {
+            'type_uris': ['http://specs.openid.net/auth/2.0/return_to'],
+            'endpoint_urls': [request.build_absolute_uri(reverse('activity.views.complete'))],
+        },
+        context_instance=RequestContext(request),
+        mimetype='application/xrds+xml',
+    )
+
+
 @auth_forbidden
 def signin(request, nexturl=None):
-    return render_to_response(
+    resp = render_to_response(
         'signin.html',
         {},
         context_instance=RequestContext(request),
     )
+    resp['X-XRDS-Location'] = request.build_absolute_uri(reverse('activity.views.xrds'))
+    return resp
 
 
 @auth_required

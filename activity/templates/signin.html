@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block head %}
+<meta http-equiv="X-XRDS-Location" content="{% url activity.views.xrds %}">
+{% endblock %}
+
 {% block content %}
 
     <div class="span-24">
